@@ -1,6 +1,8 @@
 using Habitus.Data;
 using Habitus.Models;
+using Habitus.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -12,6 +14,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 builder.Services.AddControllers();
 

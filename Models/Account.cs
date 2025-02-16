@@ -1,5 +1,5 @@
 ﻿namespace Habitus.Models;
 
-public class Account : User
+public class Account
 {
 }
