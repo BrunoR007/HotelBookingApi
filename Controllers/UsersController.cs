@@ -1,8 +1,8 @@
-using Habitus.Data;
-using Habitus.Models;
+using Hoteis.Data;
+using Hoteis.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Habitus.Controllers;
+namespace Hoteis.Controllers;
 
 [ApiController]
 [Route("api/usuarios")]

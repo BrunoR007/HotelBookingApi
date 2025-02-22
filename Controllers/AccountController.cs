@@ -1,45 +1,50 @@
-﻿using Habitus.Models;
+﻿using Hoteis.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
-namespace Habitus.Controllers;
+namespace Hoteis.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IEmailSender emailSender) : ControllerBase
+public class AccountController(UserManager<User> userManager, SignInManager<User> signInManager,
+    IEmailSender emailSender, IConfiguration configuration) : ControllerBase
 {
     private readonly UserManager<User> _userManager = userManager;
     private readonly SignInManager<User> _signInManager = signInManager;
     private readonly IEmailSender _emailSender = emailSender;
+    private readonly IConfiguration _configuration = configuration;
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] User user)
+    public async Task<IActionResult> Register([FromBody] RegisterDto dto)
     {
-        var result = await _userManager.CreateAsync(user, user.PasswordHash!);
+        var user = new User { UserName = dto.Email, Email = dto.Email, FirstName = dto.FirstName };
+        var result = await _userManager.CreateAsync(user, dto.Password);
 
         if (result.Succeeded)
         {
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token }, protocol: HttpContext.Request.Scheme);
-
-            await _emailSender.SendEmailAsync(user.Email!, "Confirm your email", $"Please confirm your email by clicking <a href='{confirmationLink}'>here</a>.");
-
-            return Ok("User registered successfully. Please check your email to confirm.");
+            var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token }, Request.Scheme);
+            await _emailSender.SendEmailAsync(user.Email!, "Confirm your email", $"Click <a href='{confirmationLink}'>here</a>.");
+            return Ok("User registered. Check your email.");
         }
 
         return BadRequest(result.Errors);
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(string email, string password)
+    public async Task<IActionResult> Login([FromBody] LoginDto dto)
     {
-        var result = await _signInManager.PasswordSignInAsync(email, password, false, false);
+        var user = await _userManager.FindByEmailAsync(dto.Email);
+        if (user == null || !await _userManager.CheckPasswordAsync(user, dto.Password))
+            return Unauthorized("Invalid login");
 
-        if (result.Succeeded)
-            return Ok("Login successful");
-
-        return Unauthorized("Invalid login attempt");
+        var token = GenerateJwtToken(user);
+        return Ok(new { Token = token });
     }
 
     [HttpGet("confirm-email")]
@@ -112,4 +117,28 @@ public class AccountController(UserManager<User> userManager, SignInManager<User
 
         return Ok("Logged out successfully.");
     }
+
+    private string GenerateJwtToken(User user)
+    {
+        var claims = new[]
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+            new Claim(JwtRegisteredClaimNames.Email, user.Email!),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        };
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var token = new JwtSecurityToken(
+            issuer: _configuration["Jwt:Issuer"],
+            audience: _configuration["Jwt:Audience"],
+            claims: claims,
+            expires: DateTime.Now.AddHours(1),
+            signingCredentials: creds);
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
 }
+
+public record RegisterDto(string Email, string Password, string FirstName);
+public record LoginDto(string Email, string Password);

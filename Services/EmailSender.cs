@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Mail;
 
-namespace Habitus.Services;
+namespace Hoteis.Services;
 
 public class EmailSender : IEmailSender
 {
