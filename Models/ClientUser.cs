@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Hoteis.Models;
 
-public class User : IdentityUser
+public class ClientUser : IdentityUser
 {
     public string FirstName { get; set; } = null!;
 
@@ -24,6 +24,8 @@ public class User : IdentityUser
     public List<Reservation> Reservations { get; set; } = [];
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public DateTime ModifiedAt { get; set; } = DateTime.UtcNow;
 
     [RegularExpression(@"^\d{11}$", ErrorMessage = "CPF deve ter 11 dígitos.")]
     public string? CPF { get; set; }

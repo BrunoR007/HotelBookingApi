@@ -4,7 +4,7 @@ using System.Net.Mail;
 
 namespace Hoteis.Services;
 
-public class EmailSender : IEmailSender
+public class EmailSenderService : IEmailSender
 {
     private readonly string _smtpServer = "smtp.yourmailserver.com";
     private readonly int _smtpPort = 587; 

@@ -1,28 +1,27 @@
-﻿using Hoteis.Models;
+﻿using Hoteis.Interfaces;
+using Hoteis.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace Hoteis.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class AccountController(UserManager<User> userManager, SignInManager<User> signInManager,
-    IEmailSender emailSender, IConfiguration configuration) : ControllerBase
+public class ClientUsersController(UserManager<ClientUser> userManager, SignInManager<ClientUser> signInManager,
+    IEmailSender emailSender, ITokenService tokenService) : ControllerBase
 {
-    private readonly UserManager<User> _userManager = userManager;
-    private readonly SignInManager<User> _signInManager = signInManager;
+    private readonly UserManager<ClientUser> _userManager = userManager;
+    private readonly SignInManager<ClientUser> _signInManager = signInManager;
     private readonly IEmailSender _emailSender = emailSender;
-    private readonly IConfiguration _configuration = configuration;
+    private readonly ITokenService _tokenService = tokenService;
 
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDto dto)
     {
-        var user = new User { UserName = dto.Email, Email = dto.Email, FirstName = dto.FirstName };
+        var user = new ClientUser { UserName = dto.Email, Email = dto.Email, FirstName = dto.FirstName };
         var result = await _userManager.CreateAsync(user, dto.Password);
 
         if (result.Succeeded)
@@ -39,11 +38,11 @@ public class AccountController(UserManager<User> userManager, SignInManager<User
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto dto)
     {
-        var user = await _userManager.FindByEmailAsync(dto.Email);
-        if (user == null || !await _userManager.CheckPasswordAsync(user, dto.Password))
+        var clientUser = await _userManager.FindByEmailAsync(dto.Email);
+        if (clientUser == null || !await _userManager.CheckPasswordAsync(clientUser, dto.Password))
             return Unauthorized("Invalid login");
 
-        var token = GenerateJwtToken(user);
+        var token = _tokenService.GenerateJwtToken(clientUser.Id, "Client", clientUser.Email);
         return Ok(new { Token = token });
     }
 
@@ -116,27 +115,6 @@ public class AccountController(UserManager<User> userManager, SignInManager<User
         await _signInManager.SignOutAsync();
 
         return Ok("Logged out successfully.");
-    }
-
-    private string GenerateJwtToken(User user)
-    {
-        var claims = new[]
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email!),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
-
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        var token = new JwtSecurityToken(
-            issuer: _configuration["Jwt:Issuer"],
-            audience: _configuration["Jwt:Audience"],
-            claims: claims,
-            expires: DateTime.Now.AddHours(1),
-            signingCredentials: creds);
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }
 

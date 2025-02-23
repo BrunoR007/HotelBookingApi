@@ -29,7 +29,7 @@ public class ReservationsController(AppDbContext context) : ControllerBase
 
         Reservation reservation = new() 
         {
-            UserId = User.FindFirstValue(JwtRegisteredClaimNames.Sub)!,
+            ClientUserId = User.FindFirstValue(JwtRegisteredClaimNames.Sub)!,
             RoomId = dto.RoomId,
             CheckIn = dto.CheckIn,
             CheckOut = dto.CheckOut,

@@ -1,6 +1,6 @@
 ﻿using Hoteis.Data;
+using Hoteis.Interfaces;
 using Hoteis.Models;
-using Hoteis.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +25,7 @@ public class RoomsController(AppDbContext context, IRoomService roomService) : C
     [HttpPost]
     public async Task<IActionResult> CreateRoom([FromForm] RoomDto roomDto, List<IFormFile> photos)
     {
-        var room = new Room
+        Room room = new()
         {
             HotelId = roomDto.HotelId,
             RoomNumber = roomDto.RoomNumber,
@@ -54,10 +54,10 @@ public class RoomsController(AppDbContext context, IRoomService roomService) : C
     [HttpGet("{id}")]
     public async Task<IActionResult> GetRoom(int id)
     {
-        var reservation = await _context.Rooms
+        var room = await _context.Rooms
             .FirstOrDefaultAsync(r => r.Id == id);
 
-        return reservation == null ? NotFound() : Ok(reservation);
+        return room == null ? NotFound() : Ok(room);
     }
 }
 
