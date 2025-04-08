@@ -17,7 +17,7 @@ public class HotelsController(AppDbContext context) : ControllerBase
     {
         _context.Hotels.Add(hotel);
         await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetHotel), new { id = hotel.Id }, hotel);
+        return CreatedAtAction(nameof(GetHotel), new { id = hotel.HotelId }, hotel);
     }
 
     [HttpGet("{id}")]

@@ -2,9 +2,9 @@
 
 public class Room : BaseClass
 {
-    public int Id { get; set; }
+    public long RoomId { get; set; }
     
-    public int HotelId { get; set; }
+    public long HotelId { get; set; }
     
     public Hotel Hotel { get; set; } = null!;
     
@@ -25,9 +25,9 @@ public class Room : BaseClass
 
 public class RoomPhoto : BaseClass
 {
-    public int Id { get; set; }
+    public long RoomPhotoId { get; set; }
     
-    public int RoomId { get; set; }
+    public long RoomId { get; set; }
     
     public Room Room { get; set; } = null!;
     

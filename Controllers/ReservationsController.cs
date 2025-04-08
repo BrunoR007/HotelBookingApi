@@ -20,7 +20,7 @@ public class ReservationsController(AppDbContext context) : ControllerBase
     {
         var room = await _context.Rooms
             .Include(r => r.Reservations)
-            .FirstOrDefaultAsync(r => r.Id == dto.RoomId);
+            .FirstOrDefaultAsync(r => r.RoomId == dto.RoomId);
 
         if (room == null) return NotFound("Quarto não encontrado");
 
@@ -39,7 +39,7 @@ public class ReservationsController(AppDbContext context) : ControllerBase
         _context.Reservations.Add(reservation);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetReservation), new { id = reservation.Id }, reservation);
+        return CreatedAtAction(nameof(GetReservation), new { id = reservation.ReservationId }, reservation);
     }
 
     [HttpGet("{id}")]
@@ -47,7 +47,7 @@ public class ReservationsController(AppDbContext context) : ControllerBase
     {
         var reservation = await _context.Reservations
             .Include(r => r.Room)
-            .FirstOrDefaultAsync(r => r.Id == id);
+            .FirstOrDefaultAsync(r => r.ReservationId == id);
 
         return reservation == null ? NotFound() : Ok(reservation);
     }

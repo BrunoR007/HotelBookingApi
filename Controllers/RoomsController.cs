@@ -48,14 +48,14 @@ public class RoomsController(AppDbContext context, IRoomService roomService) : C
 
         _context.Rooms.Add(room);
         await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetRoom), new { id = room.Id }, room);
+        return CreatedAtAction(nameof(GetRoom), new { id = room.RoomId }, room);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetRoom(int id)
     {
         var room = await _context.Rooms
-            .FirstOrDefaultAsync(r => r.Id == id);
+            .FirstOrDefaultAsync(r => r.RoomId == id);
 
         return room == null ? NotFound() : Ok(room);
     }
