@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Hoteis.Controllers;
 
-[Authorize]
+//[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class HotelsController(AppDbContext context) : ControllerBase
@@ -21,7 +21,7 @@ public class HotelsController(AppDbContext context) : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetHotel(int id)
+    public async Task<IActionResult> GetHotel(long id)
     {
         var hotel = await _context.Hotels.FindAsync(id);
         return hotel == null ? NotFound() : Ok(hotel);

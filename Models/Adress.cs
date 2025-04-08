@@ -2,7 +2,7 @@
 
 public class Address : BaseClass
 {
-    public long AdressId { get; set; }
+    public long AddressId { get; set; }
     
     public string Street { get; set; } = null!;
     
