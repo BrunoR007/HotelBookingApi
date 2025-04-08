@@ -18,9 +18,9 @@ builder.Services.AddIdentity<ClientUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddIdentity<HotelUser, IdentityRole>()
-    .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
+//builder.Services.AddIdentity<HotelUser, IdentityRole>()
+//    .AddEntityFrameworkStores<AppDbContext>()
+//    .AddDefaultTokenProviders();
 
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("ClientUserOnly", policy => policy.RequireClaim("userType", "ClientUser"))
