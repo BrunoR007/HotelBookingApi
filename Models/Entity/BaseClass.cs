@@ -1,4 +1,4 @@
-﻿namespace Hoteis.Models;
+﻿namespace Hoteis.Models.Entity;
 
 public class BaseClass
 {

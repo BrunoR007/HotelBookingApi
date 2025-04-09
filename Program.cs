@@ -1,5 +1,5 @@
 using Hoteis.Data;
-using Hoteis.Models;
+using Hoteis.Models.Entity;
 using Hoteis.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;

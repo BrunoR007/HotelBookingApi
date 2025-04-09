@@ -1,4 +1,4 @@
-﻿using Hoteis.Models;
+﻿using Hoteis.Models.Entity;
 
 namespace Hoteis.Interfaces;
 

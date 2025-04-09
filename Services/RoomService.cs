@@ -1,6 +1,6 @@
 ﻿using Hoteis.Data;
 using Hoteis.Interfaces;
-using Hoteis.Models;
+using Hoteis.Models.Entity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hoteis.Services;

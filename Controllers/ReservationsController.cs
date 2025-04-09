@@ -1,5 +1,5 @@
 ﻿using Hoteis.Data;
-using Hoteis.Models;
+using Hoteis.Models.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

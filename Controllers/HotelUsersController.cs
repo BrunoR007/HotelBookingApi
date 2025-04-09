@@ -1,5 +1,5 @@
 using Hoteis.Interfaces;
-using Hoteis.Models;
+using Hoteis.Models.Entity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 

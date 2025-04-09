@@ -1,4 +1,4 @@
-﻿using Hoteis.Models;
+﻿using Hoteis.Models.Entity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -66,6 +66,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
             .HasOne(r => r.Room)
             .WithMany(r => r.Reservations)
             .HasForeignKey(r => r.RoomId);
+
+        builder.Entity<Reservation>()
+            .ToTable(t => t.HasCheckConstraint("CK_Reservation_Dates", "CheckOut > CheckIn"));
 
         // Índices e restrições
         builder.Entity<State>()
