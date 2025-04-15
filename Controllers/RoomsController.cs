@@ -29,7 +29,7 @@ public class RoomsController(AppDbContext context, IRoomService roomService) : C
         {
             HotelId = roomDto.HotelId,
             RoomNumber = roomDto.RoomNumber,
-            Type = roomDto.Type,
+            RoomTypeId = roomDto.RoomTypeId,
             PricePerNight = roomDto.PricePerNight,
             Capacity = roomDto.Capacity,
             Description = roomDto.Description
@@ -61,4 +61,4 @@ public class RoomsController(AppDbContext context, IRoomService roomService) : C
     }
 }
 
-public record RoomDto(int HotelId, string RoomNumber, string Type, decimal PricePerNight, int Capacity, string Description);
+public record RoomDto(int HotelId, string RoomNumber, int RoomTypeId, decimal PricePerNight, int Capacity, string Description);

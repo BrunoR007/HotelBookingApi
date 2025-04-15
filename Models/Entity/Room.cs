@@ -13,14 +13,15 @@ public class Room : BaseClass
     public decimal PricePerNight { get; set; }
 
     public int Capacity { get; set; }
-
+    
     public string Description { get; set; } = null!;
+
+    public int RoomTypeId { get; set; }
 
     public List<RoomPhoto> Photos { get; set; } = [];
 
     public List<Reservation> Reservations { get; set; } = [];
 
-    public int RoomTypeId { get; set; }
 
     public RoomType RoomType { get; set; } = null!;
 }

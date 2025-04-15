@@ -22,7 +22,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
         base.OnModelCreating(builder);
 
         // Configuração das tabelas separadas para Identity
-        builder.Entity<ClientUser>().ToTable("AspNetClients");
+        builder.Entity<ClientUser>().ToTable("AspNetUsers");
         builder.Entity<HotelUser>().ToTable("AspNetHotelUsers");
 
         // Relacionamento Hotel e Address (1:1)
@@ -86,7 +86,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
             .HasIndex(u => u.CNPJ)
             .IsUnique();
 
-        // Configuração de propriedades obrigatórias
         builder.Entity<Hotel>()
             .Property(h => h.Name)
             .IsRequired();
@@ -125,7 +124,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
             .IsRequired();
 
         builder.Entity<Room>()
-            .Property(r => r.Type)
+            .Property(r => r.RoomTypeId)
             .IsRequired();
 
         builder.Entity<Room>()

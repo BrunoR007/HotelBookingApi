@@ -1,6 +1,0 @@
-@Habitus_HostAddress = http://localhost:5275
-
-GET {{Habitus_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
